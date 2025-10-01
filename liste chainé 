@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// 3. LISTE DOUBLEMENT CHAÎNÉE - INSERTION
+
+// Structure pour nœud doublement chaîné
+typedef struct NoeudDouble {
+    int data;
+    struct NoeudDouble* precedent;
+    struct NoeudDouble* suivant;
+} NoeudDouble;
+
+// Créer un nouveau nœud doublement chaîné
+NoeudDouble* creerNoeudDouble(int valeur) {
+    NoeudDouble* nouveau = (NoeudDouble*)malloc(sizeof(NoeudDouble));
+    nouveau->data = valeur;
+    nouveau->precedent = NULL;
+    nouveau->suivant = NULL;
+    return nouveau;
+}
+
+// Insérer à une position donnée dans une liste doublement chaînée
+NoeudDouble* insererPosition(NoeudDouble* tete, int valeur, int position) {
+    NoeudDouble* nouveau = creerNoeudDouble(valeur);
+    
+    if (position == 0 || tete == NULL) {
+        nouveau->suivant = tete;
+        if (tete != NULL) {
+            tete->precedent = nouveau;
+        }
+        return nouveau;
+    }
+
+    NoeudDouble* courant = tete;
+    for (int i = 0; i < position - 1 && courant->suivant != NULL; i++) {
+        courant = courant->suivant;
+    }
+
+    nouveau->suivant = courant->suivant;
+    nouveau->precedent = courant;
+
+    if (courant->suivant != NULL) {
+        courant->suivant->precedent = nouveau;
+    }
+
+    return tete;
+}
+
+void afficherListeDouble(NoeudDouble* tete) {
+    NoeudDouble* courant = tete;
+    printf("NULL <- ");
+    while (courant != NULL) {
+        printf("%d", courant->data);
+        if (courant->suivant != NULL) printf(" <-> ");
+        courant = courant->suivant;
+    }
+    printf(" -> NULL\n");
+}
+
+int main() {
+    NoeudDouble* liste = NULL;
+    int choix, valeur, position;
+
+    do {
+        printf("\n=== Liste Doublement Chaînée ===\n");
+        printf("1. Insérer un élément\n");
+        printf("2. Afficher la liste\n");
+        printf("3. Quitter\n");
+        printf("Choix : ");
+        scanf("%d", &choix);
+
+        switch (choix) {
+            case 1:
+                printf("Entrer la valeur : ");
+                scanf("%d", &valeur);
+                printf("Entrer la position : ");
+                scanf("%d", &position);
+                liste = insererPosition(liste, valeur, position);
+                break;
+            case 2:
+                printf("Liste : ");
+                afficherListeDouble(liste);
+                break;
+        }
+    } while (choix != 3);
+
+    return 0;
